@@ -19,9 +19,10 @@
             <el-table-column
               prop="date"
               label="日期"
-              width="150%">
+              width="150">
               <template slot-scope="scope" >
-                <span style="margin-left: 10px" >{{ scope.row.updateAt | data }}</span>
+                <span style="margin-left: 10px" v-if="scope.row.updateAt === 0" >0000-00-00</span>
+                <span style="margin-left: 10px"  v-else="">{{ scope.row.updateAt | data }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -74,8 +75,12 @@
               <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalClick * 0.0001)}}</div>
               <div class="platformDatatitle_clickNum_centersmall">万</div>
             </div>
-            <div class="platformDatatitle_clickNum_center" v-else="">
+            <div class="platformDatatitle_clickNum_center" v-else-if="TotalData.totalClick<10000">
               <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalClick)}}</div>
+              <div class="platformDatatitle_clickNum_centersmall">万</div>
+            </div>
+            <div class="platformDatatitle_clickNum_center" v-else="">
+              <div class="platformDatatitle_clickNum_centerNum">--</div>
             </div>
           </div>
           <!-- 总打赏-->
@@ -91,8 +96,12 @@
               <div class="platformDatatitle_clickNum_centerNum">{{TotalData.totalReward * 0.0001}}</div>
               <div class="platformDatatitle_clickNum_centersmall">万</div>
             </div>
+            <div class="platformDatatitle_clickNum_center" v-else-if="TotalData.totalReward<10000">
+              <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalReward)}}</div>
+              <div class="platformDatatitle_clickNum_centersmall">万</div>
+            </div>
             <div class="platformDatatitle_clickNum_center" v-else="">
-              <div class="platformDatatitle_clickNum_centerNum">{{TotalData.totalReward}}</div>
+              <div class="platformDatatitle_clickNum_centerNum">--</div>
             </div>
           </div>
           <!-- 总月票-->
@@ -109,8 +118,12 @@
               <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalMonthTicket * 0.0001)}}</div>
               <div class="platformDatatitle_clickNum_centersmall">万</div>
             </div>
-            <div class="platformDatatitle_clickNum_center" v-else="">
+            <div class="platformDatatitle_clickNum_center" v-else-if="TotalData.totalMonthTicket<10000">
               <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalMonthTicket)}}</div>
+              <div class="platformDatatitle_clickNum_centersmall">万</div>
+            </div>
+            <div class="platformDatatitle_clickNum_center" v-else="">
+              <div class="platformDatatitle_clickNum_centerNum">--</div>
             </div>
           </div>
           <!-- 总评论-->
@@ -120,8 +133,11 @@
               <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalComment * 0.0001)}}</div>
               <div class="platformDatatitle_clickNum_centersmall">万</div>
             </div>
-            <div class="platformDatatitle_clickNum_center" v-else="">
+            <div class="platformDatatitle_clickNum_center" v-else-if="TotalData.totalComment<10000">
               <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalComment)}}</div>
+            </div>
+            <div class="platformDatatitle_clickNum_center" v-else="">
+              <div class="platformDatatitle_clickNum_centerNum">--</div>
             </div>
           </div>
         </div>
@@ -154,29 +170,37 @@
             <div class="VermicelliActive_Echarts_title_item">
               <div class="platformDatatitle_clickNum_title">网友打分</div>
               <div class="platformDatatitle_clickNum_center">
-                <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.netScore)}}</div>
+                <div class="platformDatatitle_clickNum_centerNum" v-if="TotalData.netScore">{{parseInt(TotalData.netScore)}}</div>
+                <div class="platformDatatitle_clickNum_centerNum" v-else="">--</div>
               </div>
             </div>
             <!-- 讨论贴-->
             <div class="VermicelliActive_Echarts_title_item">
               <div class="platformDatatitle_clickNum_title">讨论帖</div>
-              <div class="platformDatatitle_clickNum_center" v-if="TotalData.totalTiebaComment > 10000 && TotalData.totalTiebaComment>0">
+              <div class="platformDatatitle_clickNum_center" v-if="TotalData.totalTiebaComment > 10000 ">
                 <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalTiebaComment * 0.0001)}}</div>
                 <div class="platformDatatitle_clickNum_centersmall">万</div>
               </div>
-              <div class="platformDatatitle_clickNum_center" v-else="">
+              <div class="platformDatatitle_clickNum_center" v-else-if="TotalData.totalTiebaComment < 10000 ">
                 <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalTiebaComment)}}</div>
+              </div>
+              <div class="platformDatatitle_clickNum_center" v-else="">
+                <div class="platformDatatitle_clickNum_centerNum">--</div>
               </div>
             </div>
             <!-- 参与粉丝-->
             <div class="VermicelliActive_Echarts_title_item">
               <div class="platformDatatitle_clickNum_title">参与粉丝</div>
-              <div class="platformDatatitle_clickNum_center" v-if="TotalData.totalTiebaFans>10000 && TotalData.totalTiebaFans>0">
+              <div class="platformDatatitle_clickNum_center" v-if="TotalData.totalTiebaFans>10000">
                 <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalTiebaFans * 0.0001)}}</div>
                 <div class="platformDatatitle_clickNum_centersmall">万</div>
               </div>
-              <div class="platformDatatitle_clickNum_center" v-else="">
+              <div class="platformDatatitle_clickNum_center" v-if="TotalData.totalTiebaFans<10000">
                 <div class="platformDatatitle_clickNum_centerNum">{{parseInt(TotalData.totalTiebaFans)}}</div>
+                <div class="platformDatatitle_clickNum_centersmall">万</div>
+              </div>
+              <div class="platformDatatitle_clickNum_center" v-else="">
+                <div class="platformDatatitle_clickNum_centerNum">--</div>
               </div>
             </div>
           </div>
@@ -200,6 +224,16 @@
           <div class="VermicelliActive_Comments_items" v-if="CommentsisActive">
             <div v-if="index < 5" v-for="(item, index) in specialdata" :key="index" class="VermicelliActive_Comments_item">
               {{item.content}}
+            </div>
+            <div class="NoVermicelliActive_Comments_items" v-if="specialdata.length === 0">
+              <div class="NoVermicelliActive_Comments_items_item"></div>
+              <div class="NoVermicelliActive_Comments_items_item1"></div>
+              <div class="NoVermicelliActive_Comments_items_item"></div>
+              <div class="NoVermicelliActive_Comments_items_item1"></div>
+              <div class="NoVermicelliActive_Comments_items_item"></div>
+              <div class="NoVermicelliActive_Comments_items_item1"></div>
+              <div class="NoVermicelliActive_Comments_items_item"></div>
+              <div class="NoVermicelliActive_Comments_items_item1"></div>
             </div>
           </div>
           <div v-if="PostsisActive">1111</div>
@@ -232,9 +266,16 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      TotalData: '',
+      TotalData: {},
       AnalysisArray: [],
-      tableData: [],
+      tableData: [
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+        {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0}],
       adata: false,
       VermicelliactiveName: 'first',
       CommentsisActive: true,
@@ -246,6 +287,7 @@ export default {
   },
   created () {
     this.PcommentC()
+    console.log(this.tableData)
   },
   props: ['heatRank'],
   mounted () {
@@ -253,26 +295,37 @@ export default {
     this.Relationdata_FUN()
     this.platformTotalData()
     this.VericellDataMap_FUN()
-    this.VericelEchartsbar_FUN()
   },
   methods: {
+    // 搜索数据
     searchData () {
       const that = this
       Axios({
-        url: '/dataRepresentation/searchData',
+        url: '/auth/dataRepresentation/searchData',
         method: 'get',
         params: {
           bookId: this.$route.params.id
         }
       }).then(function (res) {
-        that.tableData = res.data.data
-        console.log(that.tableData)
+        if (res.data.data.length === 0) {
+          that.tableData = [
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0},
+            {soIndex: '--', soIndexRatio: '--', soIndexScale: 0, updateAt: 0}]
+        } else {
+          that.tableData = res.data.data
+        }
       })
     },
+    // 平台数据 点击 月票 打赏 粉丝 评论
     platformTotalData () {
       const that = this
       Axios({
-        url: '/dataRepresentation/platformTotalData',
+        url: '/auth/dataRepresentation/platformTotalData',
         method: 'get',
         params: {
           bookId: this.$route.params.id
@@ -281,27 +334,38 @@ export default {
         that.TotalData = res.data.data
       })
     },
+    //  点击 打赏 月票echarts图表数据
     Relationdata_FUN () {
       const that = this
       Axios({
-        url: '/dataRepresentation/platformHistoryData',
+        url: '/auth/dataRepresentation/platformHistoryData',
         method: 'get',
         params: {
           bookId: this.$route.params.id
         }
       }).then(function (res) {
-        that.clickechats_FUN(res.data.data.dailyClick, res.data.data.updateAt)
-        that.rewardechats_FUN(res.data.data.dailyReward, res.data.data.updateAt)
-        that.ticketechats_FUN(res.data.data.dailyTicket, res.data.data.updateAt)
-        that.Vermicelliactiv_FUN1(res.data.data.dailyTiebaComment, res.data.data.updateAt)
-        that.Vermicelliactiv_FUN2(res.data.data.avgTiebaComment, res.data.data.updateAt)
+        if (res.data.data.dailyClick.length > 0) {
+          that.clickechats_FUN(res.data.data.dailyClick, res.data.data.updateAt)
+        }
+        if (res.data.data.dailyReward.length > 0) {
+          that.rewardechats_FUN(res.data.data.dailyReward, res.data.data.updateAt)
+        }
+        if (res.data.data.dailyTicket.length > 0) {
+          that.ticketechats_FUN(res.data.data.dailyTicket, res.data.data.updateAt)
+        }
+        if (res.data.data.dailyTiebaComment.length > 0) {
+          that.Vermicelliactiv_FUN1(res.data.data.dailyTiebaComment, res.data.data.updateAt)
+        }
+        if (res.data.data.avgTiebaComment.length > 0) {
+          that.Vermicelliactiv_FUN2(res.data.data.avgTiebaComment, res.data.data.updateAt)
+        }
       })
     },
-    // 精品书评
+    // 精品书评数据
     PcommentC () {
       const that = this
       Axios({
-        url: '/publicOpinion/comment',
+        url: '/auth/publicOpinion/comment',
         method: 'post',
         params: {
           bookId: this.$route.params.id,
@@ -311,20 +375,26 @@ export default {
         that.specialdata = res.data.data.opinion.content
       })
     },
+    // 地域分布 性别分布 年龄分布数据
     VericellDataMap_FUN () {
       const that = this
       Axios({
-        url: '/dataRepresentation/fansDistrbution',
+        url: '/auth/dataRepresentation/fansDistrbution',
         method: 'get',
         params: {
-          bookId: '11_1001304536'
+          bookId: this.$route.params.id
         }
       }).then(function (res) {
-        that.Vericellsexecharts_FUN(res.data.data.gender)
+        if (res.data.data.gender) {
+          that.Vericellsexecharts_FUN(res.data.data.gender)
+        } else {
+          that.Vericellsexecharts_FUN([{percent: 50, word: 'male'}, {percent: 50, word: 'female'}])
+        }
         that.VericellDataecharts_FUN(res.data.data)
         that.VericelEchartsbar_FUN(res.data.data)
       })
     },
+    // 点击echarts图表
     clickechats_FUN (a, b) {
       this.$nextTick(function () {
         // 基于准备好的dom，初始化echarts实例
@@ -348,7 +418,7 @@ export default {
             data: b.map(function (str) {
               return str.replace('2018-', '')
             }).map(function (str) {
-              return str.replace('-', ':')
+              return str.replace('-', '.')
             }),
             axisLine: {
               show: true,
@@ -416,6 +486,7 @@ export default {
         })
       })
     },
+    // 打赏echarts图表
     rewardechats_FUN (a, b) {
       this.$nextTick(function () {
         // 基于准备好的dom，初始化echarts实例
@@ -449,7 +520,7 @@ export default {
             data: b.map(function (str) {
               return str.replace('2018-', '')
             }).map(function (str) {
-              return str.replace('-', ':')
+              return str.replace('-', '.')
             }),
             axisLine: {
               show: true,
@@ -517,6 +588,7 @@ export default {
         })
       })
     },
+    // 月票echarts图表
     ticketechats_FUN (a, b) {
       this.$nextTick(function () {
         // 基于准备好的dom，初始化echarts实例
@@ -540,7 +612,7 @@ export default {
             data: b.map(function (str) {
               return str.replace('2018-', '')
             }).map(function (str) {
-              return str.replace('-', ':')
+              return str.replace('-', '.')
             }),
             axisLine: {
               show: true,
@@ -593,7 +665,7 @@ export default {
           },
           series: [
             {
-              name: '每日点击',
+              name: '月票',
               type: 'line',
               stack: '总量',
               data: a,
@@ -631,7 +703,6 @@ export default {
           grid: {
             show: true,
             left: '3%',
-            right: '4%',
             bottom: '3%',
             containLabel: true,
             borderColor: '#EFEFEF'
@@ -642,7 +713,7 @@ export default {
             data: c.map(function (str) {
               return str.replace('2018-', '')
             }).map(function (str) {
-              return str.replace('-', ':')
+              return str.replace('-', '.')
             }),
             axisLine: {
               show: true,
@@ -733,7 +804,6 @@ export default {
           grid: {
             show: true,
             left: '3%',
-            right: '4%',
             bottom: '3%',
             containLabel: true,
             borderColor: '#EFEFEF'
@@ -744,7 +814,7 @@ export default {
             data: c.map(function (str) {
               return str.replace('2018-', '')
             }).map(function (str) {
-              return str.replace('-', ':')
+              return str.replace('-', '.')
             }),
             axisLine: {
               show: true,
@@ -791,7 +861,7 @@ export default {
           },
           series: [
             {
-              name: '每日新增帖子',
+              name: '人均发贴',
               type: 'line',
               stack: '总量',
               data: a,
@@ -837,7 +907,7 @@ export default {
             },
             series: [
               {
-                name: '粉丝',
+                name: '粉丝值',
                 type: 'map',
                 mapType: 'china',
                 label: {
@@ -857,6 +927,7 @@ export default {
     },
     // 粉丝性别分布
     Vericellsexecharts_FUN (a) {
+      console.log(a)
       this.$nextTick(function () {
         let womanNum = a[0]
         let manNum = a[1]
@@ -886,8 +957,8 @@ export default {
                 radius: '55%',
                 center: ['50%', '50%'],
                 data: [
-                  {value: manNum.percent, name: '男'},
-                  {value: womanNum.percent, name: '女'}
+                  {value: womanNum.percent, name: '男'},
+                  {value: manNum.percent, name: '女'}
                 ],
                 roseType: 'radius',
                 label: {
@@ -927,19 +998,34 @@ export default {
       this.CommentsisActive = false
       this.PostsisActive = true
     },
+    // 粉丝年龄分布echarts图
     VericelEchartsbar_FUN (a) {
-      console.log(a)
       this.$nextTick(function () {
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('VermicelliActive_Echarts_yearbar'))
         // 绘制图表
         myChart.setOption(
           {
+            title: {
+              text: '',
+              subtext: '年龄分布',
+              left: 'left',
+              top: -10,
+              textStyle: {
+                color: '#ccc'
+              }
+            },
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow'
+              }
+            },
             legend: {
               data: ['标准分布', '本书分布']
             },
             grid: {
-              left: '3%',
+              left: '5%',
               right: '4%',
               bottom: '3%',
               containLabel: true
@@ -1131,19 +1217,28 @@ export default {
     margin-top: -57px;
     margin-left: -24px;
     width: 59rem;
-    height: 200px;
+    height: 220px;
+    background-image: url("../images/plotbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   #rewardEcharts{
     margin-top: -57px;
     margin-left: -24px;
     width: 59rem;
-    height: 200px;
+    height: 220px;
+    background-image: url("../images/plotbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   #TicketEcharts{
     margin-top: -57px;
     margin-left: -24px;
     width: 59rem;
-    height: 200px;
+    height: 220px;
+    background-image: url("../images/plotbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   .VermicelliActive_center{
     margin-bottom: 30px;
@@ -1164,11 +1259,17 @@ export default {
   }
   #VermicelliActive_EchartDiv1 {
     margin-top: -60px;
-    margin-left: -15px;
+    margin-left: -16px;
+    background-image: url("../images/plotbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   #VermicelliActive_EchartDiv2 {
     margin-top: -60px;
-    margin-left: -15px;
+    margin-left: -16px;
+    background-image: url("../images/plotbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   .VermicelliActive_CommentsAndPosts{
     width: 23%;
@@ -1207,6 +1308,26 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .NoVermicelliActive_Comments_items{
+    width: 100%;
+    margin-top: 7px;
+  }
+  .NoVermicelliActive_Comments_items_item{
+    width: 95% ;
+    height: 14px;
+    background-color: #efefef;
+    margin-bottom: 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .NoVermicelliActive_Comments_items_item1{
+    width: 80%;
+    height: 14px;
+    background-color: #efefef;
+    margin-bottom: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
   .VermicelliActive_Comments_items a {
     display: block;

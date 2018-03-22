@@ -13,16 +13,16 @@
           <!-- 得分-->
           <div class="PublicOverview_ranking">
             <div class="PublicOverview_rankingNum">
-              <div class="PublicOverview_rankingNumber">{{PublicData.socre}}</div>
+              <div class="PublicOverview_rankingNumber" v-if="PublicData.socre">{{PublicData.socre}}</div>
+              <div class="PublicOverview_rankingNumber" v-else="">--</div>
               <div class="PublicOverview_rankingsmallText">分</div>
             </div>
             <div class="PublicOverview_rankingStar">
               <div class="PublicOverview_rankingStarComponent">
-                <star :size="48" :score="PublicData.socre"></star>
+                <star :size="48" :score="PublicData.socre * 1"></star>
               </div>
-              <div class="PublicOverview_rankingStarCommet">
-                {{PublicData.num}}人评论
-              </div>
+              <div class="PublicOverview_rankingStarCommet" v-if="PublicData.num">{{PublicData.num}}人评论</div>
+              <div class="PublicOverview_rankingStarCommet" v-else="">--人评论</div>
             </div>
           </div>
           <div class="PublicOverview_emotion">
@@ -78,8 +78,8 @@
         <div class="overview_title_first">角色讨论</div>
         <div class="overview_title_second">关于核心角色在舆论中的高质量评论内容</div>
       </div>
-      <div class="RoleDiscussion_center">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+      <div class="RoleDiscussion_center" >
+        <el-tabs v-if="discussbol" v-model="activeName" @tab-click="handleClick">
           <el-tab-pane v-for="(item, key) in Parray" :key="key" :label="item.character" :name="`${key}`">
             <div class="RoleDiscussion_center_items">
               <div v-for="(itemsmall, keys) in item.content" :key="keys" class="RoleDiscussion_center_item">
@@ -110,6 +110,53 @@
             </div>
           </el-tab-pane>
         </el-tabs>
+        <div v-else="">
+          <div class="RoleDiscussion_center_noitem">
+            <div class="RoleDiscussion_center_noitem_title"></div>
+            <div class="RoleDiscussion_center_noitem_center">
+              <div class="RoleDiscussion_center_noitem_center_title">
+              </div>
+              <div class="RoleDiscussion_center_noitem_center_authors">
+                <div class="RoleDiscussion_center_noitem_center_name"></div>
+                <div class="RoleDiscussion_center_noitem_center_authorblockstyle"></div>
+                <div class="RoleDiscussion_center_noitem_center_name_platform">
+                </div>
+              </div>
+              <div class="RoleDiscussion_center_noinformation"></div>
+              <div class="RoleDiscussion_center_noinformation1"></div>
+            </div>
+          </div>
+          <div class="RoleDiscussion_center_noitem">
+            <div class="RoleDiscussion_center_noitem_title"></div>
+            <div class="RoleDiscussion_center_noitem_center">
+              <div class="RoleDiscussion_center_noitem_center_title">
+              </div>
+              <div class="RoleDiscussion_center_noitem_center_authors">
+                <div class="RoleDiscussion_center_noitem_center_name"></div>
+                <div class="RoleDiscussion_center_noitem_center_authorblockstyle"></div>
+                <div class="RoleDiscussion_center_noitem_center_name_platform">
+                </div>
+              </div>
+              <div class="RoleDiscussion_center_noinformation"></div>
+              <div class="RoleDiscussion_center_noinformation1"></div>
+            </div>
+          </div>
+          <div class="RoleDiscussion_center_noitem">
+            <div class="RoleDiscussion_center_noitem_title"></div>
+            <div class="RoleDiscussion_center_noitem_center">
+              <div class="RoleDiscussion_center_noitem_center_title">
+              </div>
+              <div class="RoleDiscussion_center_noitem_center_authors">
+                <div class="RoleDiscussion_center_noitem_center_name"></div>
+                <div class="RoleDiscussion_center_noitem_center_authorblockstyle"></div>
+                <div class="RoleDiscussion_center_noitem_center_name_platform">
+                </div>
+              </div>
+              <div class="RoleDiscussion_center_noinformation"></div>
+              <div class="RoleDiscussion_center_noinformation1"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- 口碑词云-->
@@ -134,7 +181,7 @@
         <div class="overview_title_second">关于作品的优质话题和精品评论</div>
       </div>
       <div class="RoleDiscussion_center">
-        <div class="RoleDiscussion_center_items">
+        <div class="RoleDiscussion_center_items" v-if="discussbol">
           <div v-for="(item, key) in quality" :key="key" class="RoleDiscussion_center_item">
             <div v-if="key < 5">
               <div class="RoleDiscussion_center_item_imgAndCenter">
@@ -161,6 +208,53 @@
             </div>
           </div>
         </div>
+        <div v-else="">
+          <div class="RoleDiscussion_center_noitem">
+            <div class="RoleDiscussion_center_noitem_title"></div>
+            <div class="RoleDiscussion_center_noitem_center">
+              <div class="RoleDiscussion_center_noitem_center_title">
+              </div>
+              <div class="RoleDiscussion_center_noitem_center_authors">
+                <div class="RoleDiscussion_center_noitem_center_name"></div>
+                <div class="RoleDiscussion_center_noitem_center_authorblockstyle"></div>
+                <div class="RoleDiscussion_center_noitem_center_name_platform">
+                </div>
+              </div>
+              <div class="RoleDiscussion_center_noinformation"></div>
+              <div class="RoleDiscussion_center_noinformation1"></div>
+            </div>
+          </div>
+          <div class="RoleDiscussion_center_noitem">
+            <div class="RoleDiscussion_center_noitem_title"></div>
+            <div class="RoleDiscussion_center_noitem_center">
+              <div class="RoleDiscussion_center_noitem_center_title">
+              </div>
+              <div class="RoleDiscussion_center_noitem_center_authors">
+                <div class="RoleDiscussion_center_noitem_center_name"></div>
+                <div class="RoleDiscussion_center_noitem_center_authorblockstyle"></div>
+                <div class="RoleDiscussion_center_noitem_center_name_platform">
+                </div>
+              </div>
+              <div class="RoleDiscussion_center_noinformation"></div>
+              <div class="RoleDiscussion_center_noinformation1"></div>
+            </div>
+          </div>
+          <div class="RoleDiscussion_center_noitem">
+            <div class="RoleDiscussion_center_noitem_title"></div>
+            <div class="RoleDiscussion_center_noitem_center">
+              <div class="RoleDiscussion_center_noitem_center_title">
+              </div>
+              <div class="RoleDiscussion_center_noitem_center_authors">
+                <div class="RoleDiscussion_center_noitem_center_name"></div>
+                <div class="RoleDiscussion_center_noitem_center_authorblockstyle"></div>
+                <div class="RoleDiscussion_center_noitem_center_name_platform">
+                </div>
+              </div>
+              <div class="RoleDiscussion_center_noinformation"></div>
+              <div class="RoleDiscussion_center_noinformation1"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -175,6 +269,7 @@ export default {
   },
   data () {
     return {
+      discussbol: false,
       activeName: '0',
       AnalysisArray: [],
       adata: false,
@@ -185,7 +280,7 @@ export default {
       Pjoy: 0,
       Psad: 0,
       Psurprise: 0,
-      Parray: [],
+      Parray: [{}, {}, {}, {}, {}],
       quality: [],
       relateWords: []
     }
@@ -196,14 +291,13 @@ export default {
   },
   mounted () {
     this.PublicData_FUN()
-    this.WordCloudEcharts_FUN(this.PublicData.publicOpinionWordsCloud)
   },
   methods: {
     // 获取词云数据
     PublicData_FUN () {
       const that = this
       Axios({
-        url: '/publicOpinion/opinion',
+        url: '/auth/publicOpinion/opinion',
         method: 'post',
         params: {
           bookId: this.$route.params.id
@@ -211,12 +305,11 @@ export default {
       }).then(function (res) {
         that.PublicData = res.data.data
         that.relateWords = res.data.data.relateWords
-        console.log(that.relateWords)
         that.RelevantEcharts_FUN()
         that.Panger = parseInt(res.data.data.publicOpinionOrverView.anger)
         that.Pexpect = parseInt(res.data.data.publicOpinionOrverView.expect)
         that.Pjoy = parseInt(res.data.data.publicOpinionOrverView.joy)
-        that.Psad = parseInt(res.data.data.publicOpinionOrverView.sad)
+        that.Psad = parseInt(res.data.data.publicOpinionOrverView.sorrow)
         that.Psurprise = parseInt(res.data.data.publicOpinionOrverView.surprise)
         that.WordCloudEcharts_FUN(res.data.data.publicOpinionWordsCloud)
       })
@@ -225,29 +318,38 @@ export default {
     PcommentA () {
       const that = this
       Axios({
-        url: '/publicOpinion/comment',
+        url: '/auth/publicOpinion/comment',
         method: 'post',
         params: {
           bookId: this.$route.params.id,
           type: 'character'
         }
       }).then(function (res) {
-        that.Parray = res.data.data.opinion.content
+        if (res.data.data.opinion.content) {
+          that.discussbol = true
+          that.Parray = res.data.data.opinion.content
+        } else {
+          that.discussbol = false
+        }
       })
     },
     // 高质量评论
     PcommentB () {
       const that = this
       Axios({
-        url: '/publicOpinion/comment',
+        url: '/auth/publicOpinion/comment',
         method: 'post',
         params: {
           bookId: this.$route.params.id,
           type: 'quality'
         }
       }).then(function (res) {
-        console.log(res.data.data.opinion)
-        that.quality = res.data.data.opinion.content
+        if (res.data.data.opinion.content) {
+          that.discussbol = true
+          that.quality = res.data.data.opinion.content
+        } else {
+          that.discussbol = false
+        }
       })
     },
     // 词云echarts
@@ -293,6 +395,7 @@ export default {
         )
       })
     },
+    //  相关热区echart函数
     roundDatas (num, size, starname, color) {
       var datas = []
       for (var i = 0; i < num; i++) {
@@ -364,7 +467,6 @@ export default {
       let colors = ['#dc665d', '#f4c384', '#6bd492', '#767197', '#f3ab65', '#406694', '#5a9aa2']
       let roundData = [30, 30, 40, 50, 60, 60, 60]
       let linkData = [20, 40, 40, 60, 60, 70, 70]
-      console.log(that.relateWords)
       for (let i = 0; i < that.relateWords.length; i++) {
         seriesitem[i] = that.starSeries(circleSize[i], that.roundDatas(roundData[i], that.relateWords[i].power, that.relateWords[i].query, colors[i]), that.linkDatas(linkData[i]), false)
       }
@@ -474,6 +576,58 @@ export default {
     -webkit-box-orient:vertical;
     -webkit-line-clamp:3;
   }
+  /***************缺省样式*/
+  .RoleDiscussion_center_noitem{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 25px;
+  }
+  .RoleDiscussion_center_noitem_title{
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    background-color: #efefef;
+    border-radius: 20px;
+  }
+  .RoleDiscussion_center_noitem_center{
+    width: 100%;
+  }
+  .RoleDiscussion_center_noitem_center_title{
+    width: 200px;
+    height: 12px;
+    color: #5E5E5E;
+    font-size: 12px;
+    font-weight: 800;
+    background-color: #efefef;
+    margin-bottom: 10px;
+  }
+  .RoleDiscussion_center_noitem_center_authors{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .RoleDiscussion_center_noitem_center_name, .RoleDiscussion_center_noitem_center_name_platform{
+    width: 7%;
+    height: 12px;
+    font-size: 12px;
+    line-height: 2rem;
+    color: #9B9B9B;
+    background-color: #efefef;
+    margin-bottom: 10px;
+  }
+  .RoleDiscussion_center_noinformation{
+    width: 95%;
+    height: 12px;
+    background-color: #efefef;
+  }
+  .RoleDiscussion_center_noinformation1{
+    width: 75%;
+    height: 12px;
+    margin-top: 10px;
+    background-color: #efefef;
+  }
+  /********************************/
   .WordCloud_RelevantAndEcharts{
     margin-top: 20px;
     margin-bottom: 30px;

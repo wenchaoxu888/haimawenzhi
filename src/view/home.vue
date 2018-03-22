@@ -7,6 +7,10 @@
         <div class="home_center_navDIV">
           <div class="home_header_nav"><a href="http://book.haimaqingfan.com/library?category=-1&channel=-1&status=-1&word=-1&update=-1&sort=popularity">书城</a></div>
           <div class="home_header_nav"><a href='http://book.haimaqingfan.com'>关于</a></div>
+          <div class="home_header_nav">
+            <div class="home_header_nav_login" @click="gologin" v-if="tokenbol">登录</div>
+            <div class="home_header_nav_login" v-else="" @click="gopersonalcenter">个人中心</div>
+          </div>
         </div>
       </div>
       <!-- 搜索框-->
@@ -77,25 +81,33 @@
               <div class="home_bookinfo_center_top">
                 <div class="home_bookinfo_author">
                   <!--<div class="home_bookinfo_block"></div>-->
-                  <div class="home_bookinfo_authorinfo">{{bookinfo.author}}</div>
+                  <div class="home_bookinfo_authorinfo" v-if="bookinfo.author">{{bookinfo.author}}</div>
+                  <div class="home_bookinfo_authorinfo" v-else="">作者名称</div>
                 </div>
                 <div class="home_bookinfo_author">
                   <div class="home_bookinfo_block"></div>
-                  <div class="home_bookinfo_authorinfo">{{bookinfo.platform}}</div>
+                  <div class="home_bookinfo_authorinfo" v-if="bookinfo.platform">{{bookinfo.platform}}</div>
+                  <div class="home_bookinfo_authorinfo" v-else="">书籍平台</div>
                 </div>
                 <div class="home_bookinfo_author">
                   <div class="home_bookinfo_block"></div>
-                  <div class="home_bookinfo_authorinfo">{{channel[bookinfo.platform]}}</div>
+                  <div class="home_bookinfo_authorinfo" v-if="bookinfo.platform">{{channel[bookinfo.platform]}}</div>
+                  <div class="home_bookinfo_authorinfo" v-else="">男／女性向小说</div>
                 </div>
               </div>
-              <div class="home_bookinfo_center_bottom">
-              {{bookinfo.introduction}}
+              <div v-if="$route.params.type === 'user'" class="home_bookinfo_center_bottom">暂无简介</div>
+              <div v-else-if="bookinfo.introduction" class="home_bookinfo_center_bottom">{{bookinfo.introduction}}</div>
+              <div v-else="" class="home_bookinfo_center_bottom1">
+                <div></div>
+                <div></div>
+                <div></div>
               </div>
             </div>
             <div class="home_bookinfo_center_right">
               <div class="home_bookinfo_center_right_update">
                 <div style="font-size: 1rem; line-height: 2rem">数据更新于</div>
-                <div style="font-size: 0.95rem; width:  6.8rem">{{ homeDay | data}}</div>
+                <div style="font-size: 0.95rem; width:  6.8rem" v-if="homeDay">{{ homeDay | data}}</div>
+                <div style="font-size: 0.95rem; width:  6.8rem" v-else="">----年--月--日--时--分</div>
               </div>
               <div>
                 <!--<el-button class="home_bookinfo_right_follow" size="small" type="primary">关注</el-button>-->
@@ -133,10 +145,13 @@
         </div>
       </div>
     </div>
+    <!-- 登录组件-->
+    <user  ref="userRef" @usertoken="tokenbol_FUN"></user>
   </div>
 </template>
 
 <script>
+import User from '../components/Userview.vue'
 import Plot from '../components/plot.vue'
 import PersonageSetting from '../components/PersonageSetting.vue'
 import DataRepresentation from '../components/DataRepresentation.vue'
@@ -150,13 +165,15 @@ export default {
     Plot,
     PersonageSetting,
     DataRepresentation,
-    PublicOpinion
+    PublicOpinion,
+    User
   },
   name: 'home',
   data () {
     return {
-      channel: {'起点中文网': '男性向小说', '起点女生网': '女性向小说', '创世中文网': '男性向小说', '云起书院': '女性向小说', '晋江文学城': '女性向小说', '潇湘书院': '女性向小说'},
-      bookinfo: '',
+      tokenbol: true,
+      channel: {'起点中文网': '男性向小说', '起点女生网': '女性向小说', '创世中文网': '男性向小说', '云起书院': '女性向小说', '晋江文学城': '女性向小说', '潇湘书院': '女性向小说', '书籍平台': '男／女性向小说'},
+      bookinfo: {bookName: '作品名称', score: 0, heatRank: '000', author: '作者名称', platform: '书籍平台'},
       activeName: 'first',
       msg: 'Welcome to Your Vue.js App',
       input5: '',
@@ -168,6 +185,7 @@ export default {
   created () {
     this.book_Data()
     this.homedayData()
+    this.tokenbol_FUN()
   },
   filters: {
     // 添加日期转换的过滤器
@@ -186,16 +204,32 @@ export default {
     }
   },
   methods: {
+    //  判断是否登录
+    tokenbol_FUN () {
+      if (localStorage.token === undefined) {
+        this.tokenbol = true
+      } else {
+        this.tokenbol = false
+      }
+    },
+    //  进入个人中心页面
+    gopersonalcenter () {
+      this.$router.push({name: 'personalcenter'})
+    },
+    gologin () {
+      this.$refs.userRef.showHandler()
+    },
     gooffw () {
       this.$router.push({
         path: '/',
         name: 'OfficialWebsite'
       })
     },
+    //  获取书籍更新时间
     homedayData () {
       const that = this
       Axios({
-        url: '/dataRepresentation/platformTotalData',
+        url: '/auth/dataRepresentation/platformTotalData',
         method: 'get',
         params: {
           bookId: this.$route.params.id
@@ -204,14 +238,15 @@ export default {
         that.homeDay = res.data.data.updateAt
       })
     },
+    //  获取书籍信息页面
     book_Data () {
       const that = this
       Axios({
-        url: '/bookSearch/getBookById',
+        url: '/auth/bookSearch/getBookById',
         method: 'get',
         params: {
           bookId: this.$route.params.id,
-          type: 'lucene'
+          type: this.$route.params.type
         }
       }).then(function (res) {
         that.bookinfo = res.data.data
@@ -260,20 +295,11 @@ export default {
   margin-right: 2%;
   cursor: pointer;
 }
-.home_header_nav{
-  width: 50%;
-  margin-left: 2%;
-  line-height: 20px;
-  margin-top: 18px;
-  font-size: 1rem;
-  color: #fff;
-}
 .home_center_navDIV{
-  height: 50px;
   text-decoration: none;
   font-size: 1rem;
   color: #fff;
-  line-height: 20px;
+  line-height: 45px;
   margin-top: 18px;
   display: flex;
 }
@@ -283,7 +309,12 @@ export default {
   min-width: 100px;
   text-decoration: none;
   color: white;
-
+}
+.home_header_nav_login{
+  width: 10%;
+  min-width: 100px;
+  color: white;
+  cursor: pointer;
 }
   .el-select{
     width: 100px;
@@ -312,6 +343,9 @@ export default {
     max-width: 200px;
     min-width: 100px;
     height: 200px;
+    background-image: url("../images/cover.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   .home_bookinfo_cover img{
     width: 100%;
@@ -396,6 +430,21 @@ export default {
     display:-webkit-box;
     -webkit-box-orient:vertical;
     -webkit-line-clamp:3;
+  }
+  .home_bookinfo_center_bottom1{
+    margin-top: 15px;
+    width: 100%;
+    height: 60px;
+    text-align: left;
+    font-size: 0.87rem;
+    color: #3D3D3D;
+  }
+  .home_bookinfo_center_bottom1 div{
+    width:100%;
+    min-width: 635px;
+    height: 0.87rem;
+    margin-bottom: 5px;
+    background-color: #efefef;
   }
   .home_bookinfo_center_right{
     margin-top: 20px;

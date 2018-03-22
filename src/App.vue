@@ -13,6 +13,8 @@ export default {
     //    Axios.defaults.baseURL = 'http://aiapi.haimaqingfan.com'
     //    测试服务器
     Axios.defaults.baseURL = 'http://cswzapi.haimaqingfan.com'
+    Axios.defaults.headers.post['AccessToken'] = localStorage.token
+    Axios.defaults.headers.get['accessToken'] = localStorage.token
   }
 }
 </script>
@@ -154,4 +156,7 @@ export default {
     border-radius: 50px !important;
     font-size: 0.5rem !important;
   }
+.el-upload-dragger{
+  height: 100px !important;
+}
 </style>

@@ -11,8 +11,13 @@
       <div class="overview_center">
         <div class="overview_center_item">
           <div class="overview_center_item_title">
-            <div class="overview_center_item_titleNum">{{plotdata.totalPlot}}</div>
-            <div class="overview_center_item_title_smallfontsize">处</div>
+            <div  v-if="plotdata.totalPlot" style="display: flex ;flex-direction: row; align-items: baseline;">
+              <div class="overview_center_item_titleNum">{{plotdata.totalPlot}}</div>
+              <div class="overview_center_item_title_smallfontsize">处</div>
+            </div>
+            <div v-else="">
+              <div class="overview_center_item_txt">运算中</div>
+            </div>
           </div>
           <div class="overview_center_item_first">
             冲突较为明显的情节片段
@@ -22,7 +27,8 @@
         </div>
         <div class="overview_center_item">
           <div class="overview_center_item_title">
-            <div class="overview_center_item_txt">{{plotdata.plotGradient}}</div>
+            <div class="overview_center_item_txt" v-if="plotdata.plotGradient">{{plotdata.plotGradient}}</div>
+            <div class="overview_center_item_txt" v-else="">运算中</div>
           </div>
           <div class="overview_center_item_first">整个故事的行文紧凑度</div>
           <div class="overview_center_item_second">海马累计海量作品紧凑度数据</div>
@@ -30,7 +36,8 @@
         </div>
         <div class="overview_center_item">
           <div class="overview_center_item_title">
-            <div class="overview_center_item_txt">{{plotdata.leadCharacter}}</div>
+            <div class="overview_center_item_txt" v-if="plotdata.leadCharacter">{{plotdata.leadCharacter}}</div>
+            <div class="overview_center_item_txt" v-else="">运算中</div>
           </div>
           <div class="overview_center_item_first">故事中的核心角色</div>
           <div class="overview_center_item_second">通过分析作品前三万字</div>
@@ -68,7 +75,7 @@
         <div class="overview_title_second">对划分的剧情片段进行相关文本提取</div>
       </div>
       <div class="important_plot_center">
-        <div class="important_plot_center_detailed">
+        <div class="important_plot_center_detailed" :class="{important_plot_center_detailed_class : imdetailed_itemarry === [] || imdetailed_itemarry === undefined}">
           <div class="important_plot_detailed_item" v-for="(item, itemindex) in imdetailed_itemarry" :key="itemindex">
             <div class="important_plot_detailed_title">
               <div class="important_plot_detailed_titleName">
@@ -79,9 +86,10 @@
                   {{item.name}}
                 </div>
               </div>
-              <div class="important_plot_detailed_NumWords">{{item.start}}字 ~ {{item.end}}字</div>
+              <div class="important_plot_detailed_NumWords" v-if="item.start || item.end">{{item.start}}字 ~ {{item.end}}字</div>
+              <div class="important_plot_detailed_NumWords" style="color: #C3C3C3" v-else="">暂无数据</div>
             </div>
-            <div class="important_plot_detailed_tags">
+            <div class="important_plot_detailed_tags" >
               <div class="important_plot_detailed_tag_fortag" v-if="itemindex2 === itemindex">
                 <div class="important_plot_detailed_tag" :class="{ important_plot_detailed_tag_isActive: btnbol === index }" v-for="(item, index) in item.tags" :key="index" @click="ImportBTn(index, itemindex)">
                   {{item.tag}}
@@ -142,21 +150,119 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       categories: [0, 2],
       imarry: [],
-      imdetailed_itemarry: [],
+      imdetailed_itemarry: [ {
+        name: '剧情一',
+        start: 0,
+        end: 10000,
+        tags: [
+          {
+            tag: '关键词一',
+            content: '关键词一相关文本正在运算中'
+          },
+          {
+            tag: '关键词二',
+            content: '关键词二相关文本正在运算中'
+          },
+          {
+            tag: '关键词三',
+            content: '关键词三相关文本正在运算中'
+          },
+          {
+            tag: '关键词四',
+            content: '关键词四相关文本正在运算中'
+          },
+          {
+            tag: '关键词五',
+            content: '关键词五相关文本正在运算中'
+          },
+          {
+            tag: '关键词六',
+            content: '关键词六相关文本正在运算中'
+          }
+        ]
+      }, {
+        name: '剧情二',
+        start: 10000,
+        end: 20000,
+        tags: [
+          {
+            tag: '关键词一',
+            content: '关键词一相关文本正在运算中'
+          },
+          {
+            tag: '关键词二',
+            content: '关键词二相关文本正在运算中'
+          },
+          {
+            tag: '关键词三',
+            content: '关键词三相关文本正在运算中'
+          },
+          {
+            tag: '关键词四',
+            content: '关键词四相关文本正在运算中'
+          },
+          {
+            tag: '关键词五',
+            content: '关键词五相关文本正在运算中'
+          },
+          {
+            tag: '关键词六',
+            content: '关键词六相关文本正在运算中'
+          }
+        ]
+      }, {
+        name: '剧情三',
+        start: 20000,
+        end: 30000,
+        tags: [
+          {
+            tag: '关键词一',
+            content: '关键词一相关文本正在运算中'
+          },
+          {
+            tag: '关键词二',
+            content: '关键词二相关文本正在运算中'
+          },
+          {
+            tag: '关键词三',
+            content: '关键词三相关文本正在运算中'
+          },
+          {
+            tag: '关键词四',
+            content: '关键词四相关文本正在运算中'
+          },
+          {
+            tag: '关键词五',
+            content: '关键词五相关文本正在运算中'
+          },
+          {
+            tag: '关键词六',
+            content: '关键词六相关文本正在运算中'
+          }
+        ]
+      }],
       imIndex: '0',
       itemindex2: '0',
       btnbol: '',
-      defaultbtnbolarray: []
+      defaultbtnbolarray: [],
+      isimportdata: false
+    }
+  },
+  created () {
+    let arrlength = this.imdetailed_itemarry.length
+    for (let i = 0; i < arrlength; i++) {
+      this.defaultbtnbolarray.push(0)
     }
   },
   mounted () {
     this.drawLine()
   },
   methods: {
+    //  剧情分析数据
     drawLine () {
       const that = this
       Axios({
-        url: '/plotAnalysis/plot',
+        url: '/auth/plotAnalysis/plot',
         method: 'post',
         params: {
           bookId: this.$route.params.id
@@ -171,6 +277,7 @@ export default {
         }
       })
     },
+    // 剧情曲线的echarts
     plotfun (a, b) {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('curveChart'))
@@ -255,8 +362,8 @@ export default {
         color: '#5ABDF5'
       })
     },
+    // 点击重要剧情角色执行的函数
     ImportBTn (index, itemindex) {
-      console.log(index, itemindex)
       this.btnbol = index
       this.imIndex = index
       this.itemindex2 = itemindex
@@ -359,6 +466,9 @@ export default {
     height: 330px;
     border-radius: 3px;
     box-shadow: 0px 1px 5px 2px rgba(0,0,0,0.03);
+    background-image: url("../images/plotbg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
   }
   .curveintroduction{
     width: 25%;
@@ -411,8 +521,13 @@ export default {
   .important_plot_center_detailed{
     width: 72%;
     border-radius: 3px;
-    min-height: 250px;
+    min-height: 450px;
     box-shadow: 0px 1px 5px 2px rgba(0,0,0,0.03);
+  }
+  .important_plot_center_detailed_class{
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-image: url("../images/important_plotbg.png");
   }
   .important_plot_center_introduction{
     width: 25%;

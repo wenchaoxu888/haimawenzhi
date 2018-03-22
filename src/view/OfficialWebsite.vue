@@ -1,5 +1,5 @@
 <template>
-  <div class="OfficialWebsite">
+  <div class="OfficialWebsite" :class="{OfficialWebsitefixed: false}">
     <div class="official_header">
       <div class="home_header">
         <div class="home_header_logo">
@@ -7,6 +7,10 @@
         <div class="home_center_navDIV">
           <div class="home_header_nav"><a href="http://book.haimaqingfan.com/library?category=-1&channel=-1&status=-1&word=-1&update=-1&sort=popularity">书城</a></div>
           <div class="home_header_nav"><a href='http://book.haimaqingfan.com'>关于</a></div>
+          <div class="home_header_nav">
+            <div class="home_header_nav_login" @click="gologin" v-if="tokenbol">登录</div>
+            <div class="home_header_nav_login" v-else="" @click="gopersonalcenter">个人中心</div>
+          </div>
         </div>
       </div>
       <div class="official_header_bookinfo">
@@ -19,6 +23,33 @@
           </div>
           <div class="official_header_bookinfo_nav">
             <div>提供针对小说故事内容的详细数据分析服务</div>
+          </div>
+          <!-- 搜索框-->
+          <div>
+            <div class="official_header_bookinfo_search">
+              <div class="official_header_bookinfo_search_title">作品</div>
+              <div class="official_header_bookinfo_search_center">
+              <div class="official_header_bookinfo_search_InputDiv">
+              <input class="official_header_bookinfo_search_Input" @keyup.enter="gosearchHandler()" v-model="searchData" placeholder="请输入作品链接"/>
+              </div>
+              <!-- 上传文件-->
+              <div>
+              <!--<el-upload-->
+              <!--class="upload-demo"-->
+              <!--action="https://jsonplaceholder.typicode.com/posts/"-->
+              <!--:on-preview="handlePreview"-->
+              <!--:on-remove="handleRemove"-->
+              <!--:before-remove="beforeRemove"-->
+              <!--multiple-->
+              <!--:limit="3"-->
+              <!--:on-exceed="handleExceed">-->
+              <!--<div class="updataICON"></div>-->
+              <!--</el-upload>-->
+              </div>
+              <div class="searchICON" @click="gosearchHandler()">
+              </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="official_header_bookinfo_bookcover">
@@ -314,14 +345,20 @@
         </div>
       </div>
     </div>
+    <user  ref="userRef" @usertoken="tokenbol_FUN"></user>
   </div>
 </template>
 
 <script>
+import User from '../components/Userview.vue'
 export default {
+  components: {
+    User
+  },
   name: 'OfficialWebsite',
   data () {
     return {
+      tokenbol: true,
       toBottom: 0,
       bookinfoCover: true,
       isActive1: true,
@@ -329,6 +366,7 @@ export default {
       isActive3: false,
       isActive4: false,
       activeName: 'first',
+      searchData: '',
       listImg: [
         {url: 'https://qidian.qpic.cn/qdbimg/349573/2019/180', bookId: '1_2019'},
         {url: 'https://qidian.qpic.cn/qdbimg/349573/86464/180', bookId: '21_86464'},
@@ -342,9 +380,39 @@ export default {
   mounted () {
     document.querySelector('.OfficialWebsite').style.bottom = this.toBottom
   },
+  created () {
+    this.tokenbol_FUN()
+  },
   methods: {
+    //  判断是否登录
+    tokenbol_FUN () {
+      if (localStorage.token === undefined) {
+        this.tokenbol = true
+      } else {
+        this.tokenbol = false
+      }
+    },
+    //  进入个人中心页面
+    gopersonalcenter () {
+      this.$router.push({name: 'personalcenter'})
+    },
+    gologin () {
+      this.$refs.userRef.showHandler()
+    },
     gohome (a) {
-      this.$router.push({name: 'home', params: {id: a}})
+      this.$router.push({name: 'home', params: {id: a, type: 'lucene'}})
+    },
+    gosearchHandler () {
+      if (localStorage.token) {
+        this.$router.push({name: 'searchlist', query: {sc: this.searchData}})
+      } else {
+        this.$alert('当前用户未登录请登录', '搜索失败', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.gologin()
+          }
+        })
+      }
     },
     centerisActive1 () {
       this.isActive1 = true
@@ -385,8 +453,16 @@ export default {
     align-items: center;
     min-width: 1024px;
   }
+  .OfficialWebsitefixed{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    left:0;
+  }
   .official_header{
     width: 100%;
+    height: 100%;
     min-height: 720px;
     background-image: url("../images/homebg.png");
     background-repeat: no-repeat;
@@ -432,7 +508,12 @@ export default {
     min-width: 100px;
     text-decoration: none;
     color: white;
-
+  }
+  .home_header_nav_login{
+    width: 10%;
+    min-width: 100px;
+    color: white;
+    cursor: pointer;
   }
   .official_header_nav_logo img {
     width: 100%;
@@ -441,7 +522,7 @@ export default {
   .official_header_bookinfo{
     margin-top: 140px;
     text-align: center;
-    width: 60%;
+    width: 65%;
     max-width: 1280px;
     min-width: 900px;
     height: 300px;
@@ -450,7 +531,6 @@ export default {
     align-items: center;
   }
   .official_header_bookinfo_titleinfo{
-
     width: 50%;
   }
   .official_header_bookinfo_title{
@@ -468,8 +548,61 @@ export default {
     font-size: 1.1rem;
     color: #fff;
   }
+  .official_header_bookinfo_search{
+    margin-top: 40px;
+    width: 100%;
+    height: 70px;
+  }
+  .official_header_bookinfo_search_title{
+    width: 12%;
+    height: 20px;
+    background-image: url("../images/searchtitle1_03.png");
+    background-size: 100% 100%;
+    font-size: 12px;
+    color: #666666;
+    line-height: 30px;
+    text-align: left;
+    padding-left: 5%;
+    font-weight: 800;
+
+  }
+  .official_header_bookinfo_search_center{
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    display: flex;
+  }
+  .updataICON{
+    width: 23px;
+    margin-left: 20px;
+    margin-top: 10px;
+    height: 18px;
+    background-image: url("../images/updataSearch_03.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .searchICON{
+    width: 20px;
+    margin-left:10%;
+    margin-top: 10px;
+    height: 20px;
+    background-image: url("../images/searchicon_03.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .official_header_bookinfo_search_InputDiv{
+    width: 75%;
+    height: 40px;
+  }
+  .official_header_bookinfo_search_Input{
+    margin-top: 5px;
+    width: 95%;
+    padding-left: 5%;
+    height: 30px;
+    border: none;
+  }
   .official_header_bookinfo_bookcover{
-    width: 50%;
+    width: 40%;
     display: flex;
     min-width: 500px;
     flex-direction: row;
@@ -480,7 +613,7 @@ export default {
     width: 80%;
   }
   .official_header_bookinfo_bookcover_items {
-    margin-left: 20%;
+    margin-left: 10%;
     width: 80%;
   }
   .official_header_bookinfo_bookcover_item {
